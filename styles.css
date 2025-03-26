@@ -14,6 +14,23 @@ body {
     height: 100vh;
 }
 
+/* ==== Modo oscuro (se activa con .dark-mode en el body) ==== */
+.dark-mode {
+    background-color: #121213;
+    color: #ffffff;
+}
+
+/* Ajusta color de celdas, texto, etc. en modo oscuro */
+.dark-mode .cell {
+    background-color: #3a3a3c;
+    color: #ffffff;
+    border-color: #3a3a3c;
+}
+
+.dark-mode #new-word-btn {
+    background-color: #538d4e;
+}
+
 /* ==== Encabezado ==== */
 header {
     display: flex;
@@ -23,18 +40,12 @@ header {
     border-bottom: 1px solid #ddd;
 }
 
-.header-left,
-.header-right {
-    display: flex;
-    gap: 0.5rem;
-}
-
 .header-title {
     font-size: 1.5rem;
     font-weight: bold;
 }
 
-header button {
+#dark-mode-btn {
     background-color: #fff;
     border: 1px solid #ccc;
     padding: 0.3rem 0.7rem;
@@ -42,7 +53,7 @@ header button {
     font-size: 1rem;
 }
 
-header button:hover {
+#dark-mode-btn:hover {
     background-color: #f2f2f2;
 }
 
@@ -86,7 +97,6 @@ main {
     margin-bottom: 2rem;
 }
 
-/* Cada .board-row se configura por JS para tener tantas columnas como la palabra */
 .board-row {
     display: grid;
     gap: 10px;
@@ -160,7 +170,7 @@ main {
     background-color: #c1c4c7;
 }
 
-/* Teclas especiales (Enter y Backspace) */
+/* Teclas especiales (Enter, Backspace, Tilde) */
 .special-key {
     width: 60px;
 }

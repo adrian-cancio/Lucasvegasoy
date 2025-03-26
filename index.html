@@ -8,17 +8,10 @@
 </head>
 
 <body>
-    <!-- Encabezado con botones -->
+    <!-- Encabezado con un solo botón para tema oscuro -->
     <header>
-        <div class="header-left">
-            <button id="language-btn">ES</button>
-            <button id="add-btn">+</button>
-        </div>
         <div class="header-title">WORDLE</div>
-        <div class="header-right">
-            <button id="stats-btn">📊</button>
-            <button id="settings-btn">⚙️</button>
-        </div>
+        <button id="dark-mode-btn">Tema Oscuro</button>
     </header>
 
     <!-- Botón para generar nueva palabra -->
@@ -58,6 +51,8 @@
                 <button class="key">K</button>
                 <button class="key">L</button>
                 <button class="key">Ñ</button>
+                <!-- Botón para añadir tilde a la última vocal escrita -->
+                <button class="key special-key" id="tilde-btn">´</button>
             </div>
             <!-- Tercera fila -->
             <div class="keyboard-row">

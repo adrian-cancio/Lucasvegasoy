@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Variables globales
+    // =======================
+    // 1. Variables globales
+    // =======================
     let words = [];
     let targetWord = '';
-    let rows = 6;        // Cantidad de intentos
-    let cols = 5;        // Se redefinirá en función de la palabra objetivo
+    let rows = 6;         // Cantidad de intentos
+    let cols = 5;         // Se redefine según la palabra objetivo
     let currentRow = 0;
     let currentCol = 0;
 
@@ -11,30 +13,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const boardContainer = document.getElementById('board-container');
     const keyboardContainer = document.getElementById('keyboard-container');
     const newWordBtn = document.getElementById('new-word-btn');
+    const darkModeBtn = document.getElementById('dark-mode-btn');
 
+    // Mapa para añadir acentos a vocales mayúsculas
+    const accentMap = {
+        'A': 'Á',
+        'E': 'É',
+        'I': 'Í',
+        'O': 'Ó',
+        'U': 'Ú'
+    };
+
+    // ============================
+    // 2. Funciones de ayuda
+    // ============================
+
+    // Quita acentos de una cadena (ej. "á" => "a")
     function removeAccents(str) {
-        // Convierte a forma de descomposición Unicode (NFD) y elimina los acentos
         return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
-    function getRandomWord(wordList) {
-        const randomIndex = Math.floor(Math.random() * wordList.length);
-        return wordList[randomIndex]; // "canción" tal cual
-    }
-
+    // Verifica si guess (sin acentos) existe en la lista (también sin acentos)
     function isWordValid(guess) {
-        // Normaliza el intento
         const guessNorm = removeAccents(guess.toLowerCase());
-
-        // Recorre la lista y ve si alguna coincide en su forma normalizada
         return words.some(original => {
             return removeAccents(original) === guessNorm;
         });
     }
 
+    // Añade tilde a la última letra ingresada si es una vocal (A, E, I, O, U)
+    function addAccentToLastLetter() {
+        // Si no se ha escrito nada en la fila actual o ya no hay filas disponibles
+        if (currentRow >= rows || currentCol === 0) return;
 
+        // Toma la celda anterior (última letra escrita)
+        const row = boardContainer.children[currentRow];
+        const cell = row.children[currentCol - 1];
+        const letter = cell.textContent; // p.ej. "A"
 
-    // 1. Construir tablero (6 filas x [cols dinámicas])
+        // Si existe un mapeo con tilde, lo reemplaza
+        if (accentMap[letter]) {
+            cell.textContent = accentMap[letter];
+        }
+    }
+
+    // ============================
+    // 3. Construir tablero
+    // ============================
     function createBoard() {
         boardContainer.innerHTML = ''; // Limpia el tablero si existe
 
@@ -54,45 +79,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 2. Cargar palabras desde words.txt (o URL externa)
+    // ============================
+    // 4. Cargar palabras
+    // ============================
     function loadWords() {
-        fetch('https://raw.githubusercontent.com/adrian-cancio/Lucasvegasoy/refs/heads/main/words.txt')
+        // Cambia la URL si necesitas otra ruta a tu words.txt
+        return fetch('https://raw.githubusercontent.com/adrian-cancio/Lucasvegasoy/refs/heads/main/words.txt')
             .then(response => response.text())
             .then(text => {
-                words = text.split('\n')
+                // Aceptamos palabras de cualquier longitud
+                const allWords = text.split('\n')
                     .map(w => w.trim().toLowerCase())
                     .filter(w => w.length > 0);
-                return words;
+                return allWords;
             });
     }
 
-    // 3. Elegir una palabra al azar
+    // ============================
+    // 5. Obtener palabra aleatoria
+    // ============================
     function getRandomWord(wordList) {
         const randomIndex = Math.floor(Math.random() * wordList.length);
         return wordList[randomIndex];
     }
 
-    // 4. Iniciar juego con una palabra nueva
+    // ============================
+    // 6. Iniciar el juego
+    // ============================
     function startGame() {
-        // Reiniciar estado
         currentRow = 0;
         currentCol = 0;
 
-        // Escoger palabra
+        // Escoger palabra al azar
         targetWord = getRandomWord(words);
-        // Redefinir cols según la longitud de la palabra
+
+        // Ajustar el número de columnas según la longitud de la palabra
         cols = targetWord.length;
 
+        // Reconstruir el tablero con el nuevo número de columnas
         createBoard();
+
         console.log('Palabra objetivo:', targetWord); // Para pruebas
     }
 
-    // 5. Manejar entrada de letras
+    // ============================
+    // 7. Manejo de teclas
+    // ============================
+
+    // Escribir una letra en la celda actual
     function handleKey(letter) {
-        if (currentRow >= rows) return;  // Si ya no hay más intentos
+        if (currentRow >= rows) return;  // No hay más intentos
 
         if (currentCol < cols) {
-            // Colocar la letra en la celda correspondiente
             const row = boardContainer.children[currentRow];
             const cell = row.children[currentCol];
             cell.textContent = letter.toUpperCase();
@@ -100,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 6. Eliminar última letra (Backspace)
+    // Borrar última letra
     function handleBackspace() {
         if (currentCol > 0) {
             currentCol--;
@@ -110,22 +148,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 7. Validar intento (Enter)
+    // Validar intento al presionar Enter
     function handleEnter() {
         if (currentCol < cols) {
             alert('Completa todas las letras antes de validar.');
             return;
         }
 
-        // Construimos el guess tal cual lo escribió el usuario (con acentos si puso)
+        // Construir la palabra ingresada
         const row = boardContainer.children[currentRow];
         let guess = '';
         for (let c = 0; c < cols; c++) {
-            guess += row.children[c].textContent;  // "canción" o "cancion"
+            guess += row.children[c].textContent; // con tildes si las hay
         }
         guess = guess.toLowerCase();
 
-        // 1. Verificar si la palabra está en la lista (ignorando acentos)
+        // 1. Verificar si la palabra existe en la lista (ignorando acentos)
         if (!isWordValid(guess)) {
             alert('La palabra no es válida.');
             return;
@@ -138,22 +176,27 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Colorear celdas
         for (let i = 0; i < cols; i++) {
             const cell = row.children[i];
+            const guessLetter = cell.textContent; // letra que se ve en pantalla (con o sin tilde)
             const guessLetterNorm = guessNorm[i];
+            const targetLetter = targetWord[i];   // puede tener tilde
             const targetLetterNorm = targetNorm[i];
 
             if (guessLetterNorm === targetLetterNorm) {
-                // Posición correcta
+                // Letra correcta en posición
                 cell.classList.add('correct');
+                // Si la palabra objetivo tiene tilde, la mostramos
+                cell.textContent = targetLetter.toUpperCase();
             } else if (targetNorm.includes(guessLetterNorm)) {
-                // Letra existe en otra posición
+                // Letra está en la palabra, pero en otra posición
                 cell.classList.add('present');
+                // Mantenemos lo que escribió el usuario (p.ej. si él puso tilde y no era la posición)
             } else {
                 // Letra no existe en la palabra
                 cell.classList.add('absent');
             }
         }
 
-        // 4. Verificar victoria
+        // 4. Verificar victoria (ignorando acentos)
         if (guessNorm === targetNorm) {
             alert('¡Felicidades! Adivinaste la palabra.');
             currentRow = rows; // Bloquea más entradas
@@ -170,11 +213,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 8. Eventos de teclado físico
+    // ============================
+    // 8. Eventos
+    // ============================
+
+    // a) Teclado físico
     document.addEventListener('keydown', (e) => {
         const key = e.key;
 
-        // Letras (incluyendo Ñ)
+        // Letras (incluyendo Ñ, mayúsculas y minúsculas)
         if (/^[a-zñA-ZÑ]$/.test(key)) {
             handleKey(key.toUpperCase());
         } else if (key === 'Backspace') {
@@ -184,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 9. Eventos de teclado virtual (clicks)
+    // b) Teclado virtual (clicks)
     keyboardContainer.addEventListener('click', (event) => {
         if (!event.target.classList.contains('key')) return;
         const keyPressed = event.target.textContent.trim();
@@ -193,21 +240,30 @@ document.addEventListener('DOMContentLoaded', () => {
             handleEnter();
         } else if (keyPressed === '⌫') {
             handleBackspace();
+        } else if (keyPressed === '´') {
+            addAccentToLastLetter();
         } else {
             handleKey(keyPressed);
         }
     });
 
-    // 10. Botón "Nueva Palabra"
+    // c) Botón "Nueva Palabra"
     newWordBtn.addEventListener('click', () => {
         startGame();
     });
 
-    // === Flujo inicial ===
-     loadWords()
+    // d) Botón "Tema Oscuro"
+    darkModeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+    });
+
+    // ============================
+    // 9. Flujo inicial
+    // ============================
+    loadWords()
         .then((wordList) => {
             words = wordList;
-            startGame(); // Empieza con una palabra al cargar
+            startGame(); // Inicia con una palabra al cargar
         })
         .catch(err => console.error('Error al cargar palabras:', err));
 });
