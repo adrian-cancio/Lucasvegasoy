@@ -178,3 +178,23 @@ main {
 #backspace-btn {
     font-size: 1.2rem;
 }
+
+.message-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Fondo semitransparente */
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.message-container.show {
+    opacity: 1;
+}

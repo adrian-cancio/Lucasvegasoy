@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const keyboardContainer = document.getElementById('keyboard-container');
     const newWordBtn = document.getElementById('new-word-btn');
     const darkModeBtn = document.getElementById('dark-mode-btn');
+    const messageContainer = document.getElementById('message-container');
 
     // Mapa para añadir acentos a vocales mayúsculas
     const accentMap = {
@@ -148,10 +149,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Función para mostrar mensaje en pantalla
+    function showMessage(msg) {
+        messageContainer.textContent = msg;
+        messageContainer.classList.add('show');
+        // Oculta el mensaje tras 2 segundos (puedes ajustar el tiempo)
+        setTimeout(() => {
+            messageContainer.classList.remove('show');
+        }, 2000);
+    }
+
     // Validar intento al presionar Enter
     function handleEnter() {
         if (currentCol < cols) {
-            alert('Completa todas las letras antes de validar.');
+            showMessage('Completa todas las letras antes de validar.');
             return;
         }
 
@@ -165,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1. Verificar si la palabra existe en la lista (ignorando acentos)
         if (!isWordValid(guess)) {
-            alert('La palabra no es válida.');
+            showMessage('La palabra no es válida.');
             return;
         }
 
@@ -198,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 4. Verificar victoria (ignorando acentos)
         if (guessNorm === targetNorm) {
-            alert('¡Felicidades! Adivinaste la palabra.');
+            showMessage('¡Felicidades! Adivinaste la palabra.');
             currentRow = rows; // Bloquea más entradas
             return;
         }
@@ -209,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 6. Si se agotan las filas
         if (currentRow === rows) {
-            alert('Lo siento, has perdido. La palabra era: ' + targetWord.toUpperCase());
+            showMessage('Lo siento, has perdido. La palabra era: ' + targetWord.toUpperCase());
         }
     }
 
