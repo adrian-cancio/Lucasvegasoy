@@ -8,13 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const TEXTS = {
         HEADER_TITLE: "WORDLE",
         DARK_MODE_BTN: "🌓",
-        NEW_WORD_BTN: "Nueva Palabra",
-        ENTER_BTN: "Enter",
-        MSG_INCOMPLETE: "Completa todas las letras antes de validar.",
-        MSG_INVALID: "La palabra no es válida.",
-        FINAL_TITLE_WIN: "¡Felicidades!",
-        FINAL_TITLE_LOSE: "¡Perdiste!",
-        FINAL_TEXT: "La palabra era: "
+        NEW_WORD_BTN: "Nova Palabra",
+        ENTER_BTN: "Probar",
+        MSG_INCOMPLETE: "Faltánche letras",
+        MSG_INVALID: "Usa outra palabra",
+        FINAL_TITLE_WIN: "¡Noraboa!",
+        FINAL_TITLE_LOSE: "Perdiche...",
+        FINAL_TEXT: "A palabra érache: "
     };
 
     // Insertar textos en los elementos HTML
