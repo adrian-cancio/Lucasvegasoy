@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let cols = 5;         // Se redefine según la palabra objetivo
     let currentRow = 0;
     let currentCol = 0;
+    let accentNext = false; // Nueva variable: la próxima vocal se acentuará
 
     // Referencias a elementos del DOM
     const boardContainer = document.getElementById('board-container');
@@ -37,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .normalize("NFC");
     }
 
-
     // Verifica si guess (sin acentos) existe en la lista (también sin acentos)
     function isWordValid(guess) {
         const guessNorm = removeAccents(guess.toLowerCase());
@@ -46,20 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Añade tilde a la última letra ingresada si es una vocal (A, E, I, O, U)
-    function addAccentToLastLetter() {
-        // Si no se ha escrito nada en la fila actual o ya no hay filas disponibles
-        if (currentRow >= rows || currentCol === 0) return;
-
-        // Toma la celda anterior (última letra escrita)
-        const row = boardContainer.children[currentRow];
-        const cell = row.children[currentCol - 1];
-        const letter = cell.textContent; // p.ej. "A"
-
-        // Si existe un mapeo con tilde, lo reemplaza
-        if (accentMap[letter]) {
-            cell.textContent = accentMap[letter];
-        }
+    // En lugar de addAccentToLastLetter(), usamos setAccentNext()
+    function setAccentNext() {
+        accentNext = true;
     }
 
     // ============================
@@ -131,9 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. Manejo de teclas
     // ============================
 
-    // Escribir una letra en la celda actual
+    // Escribir una letra en la celda actual, aplicando acento si corresponde
     function handleKey(letter) {
         if (currentRow >= rows) return;  // No hay más intentos
+
+        if (accentNext && accentMap[letter]) {
+            letter = accentMap[letter];
+        }
+        accentNext = false; // Reiniciamos el flag
 
         if (currentCol < cols) {
             const row = boardContainer.children[currentRow];
@@ -204,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (targetNorm.includes(guessLetterNorm)) {
                 // Letra está en la palabra, pero en otra posición
                 cell.classList.add('present');
-                // Mantenemos lo que escribió el usuario (p.ej. si puso tilde)
             } else {
                 // Letra no existe en la palabra
                 cell.classList.add('absent');
@@ -235,8 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // a) Teclado físico
     document.addEventListener('keydown', (e) => {
         const key = e.key;
-        // Letras (incluyendo Ñ/ñ en mayúsculas y minúsculas)
-        if (/^[a-zñA-ZÑ]$/.test(key)) {
+        // Si es acento (Dead key o '´'), marca la próxima vocal para acentuar
+        if (key === 'Dead' || key === '´') {
+            setAccentNext();
+        } else if (/^[a-zñA-ZÑ]$/.test(key)) {
             handleKey(key.toUpperCase());
         } else if (key === 'Backspace') {
             handleBackspace();
@@ -255,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (keyPressed === '⌫') {
             handleBackspace();
         } else if (keyPressed === '´') {
-            addAccentToLastLetter();
+            setAccentNext();
         } else {
             handleKey(keyPressed);
         }
