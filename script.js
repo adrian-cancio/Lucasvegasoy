@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-    const RAW_FILES = "https://raw.githubusercontent.com/Lucasvegasoy/Lucasvegasoy/"
+
+    const RAW_FILES = "https://raw.githubusercontent.com/Lucasvegasoy/Lucasvegasoy/";    
     
     // =======================
     // 0. Textos (para facilitar traducciones)
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let words = [];
     let targetWord = '';
     let rows = 6;         // Cantidad de intentos
-    let cols = 5;         // Se redefinirá según la palabra objetivo
+    let cols = 5;         // Se redefine según la palabra objetivo
     let currentRow = 0;
     let currentCol = 0;
     let accentNext = false; // La próxima vocal se acentuará si es true
@@ -46,6 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalText = document.getElementById('final-text');
     const finalRestart = document.getElementById('final-restart');
 
+    // Botón para forzar el teclado móvil y el input oculto
+    const mobileKeyboardBtn = document.getElementById('mobile-keyboard-btn');
+    const mobileInput = document.getElementById('mobile-input');
+
+
 
     // Mapa para añadir acentos a vocales mayúsculas
     const accentMap = {
@@ -59,16 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================
     // 2. Funciones de ayuda
     // ============================
-
-    // Quita acentos de una cadena (ej. "á" => "a")
-    // *NO* convierte "ñ" en "n", por lo que "ñ" se considera distinta.
     function removeAccents(str) {
         return str.normalize("NFD")
             .replace(/(?<![nN])[\u0300-\u036f]/g, "")
             .normalize("NFC");
     }
 
-    // Verifica si guess (sin acentos) existe en la lista (también sin acentos)
     function isWordValid(guess) {
         const guessNorm = removeAccents(guess.toLowerCase());
         return words.some(original => {
@@ -76,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Marca que la próxima vocal debe escribirse con tilde
     function setAccentNext() {
         accentNext = true;
     }
@@ -85,11 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Construir tablero
     // ============================
     function createBoard() {
-        boardContainer.innerHTML = ''; // Limpia el tablero si existe
+        boardContainer.innerHTML = '';
         for (let r = 0; r < rows; r++) {
             const rowDiv = document.createElement('div');
             rowDiv.classList.add('board-row');
-            // Ajusta la cuadrícula para la cantidad de columnas
             rowDiv.style.gridTemplateColumns = `repeat(${cols}, 62px)`;
             for (let c = 0; c < cols; c++) {
                 const cell = document.createElement('div');
@@ -104,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. Cargar palabras
     // ============================
     function loadWords() {
-        // Cambia la URL si necesitas otra ruta a tu words.txt
         return fetch(RAW_FILES + 'refs/heads/main/words.txt')
             .then(response => response.text())
             .then(text => {
@@ -132,8 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         targetWord = getRandomWord(words);
         cols = targetWord.length;
         createBoard();
-        console.log('Palabra objetivo:', targetWord); // Para pruebas
-        // Asegurarse de ocultar el contenedor final en cada nuevo juego
+        console.log('Palabra objetivo:', targetWord);
         finalContainer.classList.add('hidden');
     }
 
@@ -141,11 +138,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. Manejo de teclas
     // ============================
     function handleKey(letter) {
-        if (currentRow >= rows) return; // No hay más intentos
+        if (currentRow >= rows) return;
         if (accentNext && accentMap[letter]) {
             letter = accentMap[letter];
         }
-        accentNext = false; // Reiniciamos el flag
+        accentNext = false;
         if (currentCol < cols) {
             const row = boardContainer.children[currentRow];
             const cell = row.children[currentCol];
@@ -164,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Función para mostrar mensajes temporales
     function showMessage(msg) {
         messageContainer.textContent = msg;
         messageContainer.classList.add('show');
@@ -173,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
-    // Función para mostrar el mensaje final de forma permanente
     function showFinalMessage(won, word) {
         if (won) {
             finalTitle.textContent = TEXTS.FINAL_TITLE_WIN;
@@ -205,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const guessNorm = removeAccents(guess);
         const targetNorm = removeAccents(targetWord.toLowerCase());
+
         for (let i = 0; i < cols; i++) {
             const cell = row.children[i];
             const guessLetterNorm = guessNorm[i];
@@ -234,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================
     // 9. Eventos
     // ============================
+    // Capturamos las teclas físicas (o del teclado móvil nativo tras focus)
     document.addEventListener('keydown', (e) => {
         const key = e.key;
         if (key === 'Dead' || key === '´') {
@@ -247,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Teclado virtual
     keyboardContainer.addEventListener('click', (event) => {
         if (!event.target.classList.contains('key')) return;
         const keyPressed = event.target.textContent.trim();
@@ -261,17 +259,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Botón para generar una palabra nueva
     newWordBtn.addEventListener('click', () => {
         startGame();
     });
 
+    // Botón para tema oscuro
     darkModeBtn.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
     });
 
+    // Botón para reiniciar tras ganar/perder
     finalRestart.addEventListener('click', () => {
         finalContainer.classList.add('hidden');
         startGame();
+    });
+
+    // Botón para forzar teclado móvil
+    mobileKeyboardBtn.addEventListener('click', () => {
+        // Enfoca el input oculto para que el móvil muestre su teclado
+        mobileInput.focus();
     });
 
     // ============================

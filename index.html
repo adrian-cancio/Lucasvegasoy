@@ -21,12 +21,20 @@
         <button id="new-word-btn"></button>
     </div>
 
+    <!-- Campo de texto oculto para que el móvil abra su teclado nativo -->
+    <input id="mobile-input" type="text" autocomplete="off" style="position:absolute; left:-9999px; opacity:0;" />
+
+    <!-- Botón para forzar a mostrar el teclado nativo en móviles -->
+    <div class="new-word-container">
+        <button id="mobile-keyboard-btn">Teclado Móvil</button>
+    </div>
+
     <!-- Contenedor principal del juego -->
     <main>
         <!-- Tablero (6 filas x [longitud palabra] columnas) -->
         <div id="board-container"></div>
 
-        <!-- Teclado virtual -->
+        <!-- Teclado virtual (sigue presente para escritorio o si el usuario prefiere) -->
         <div id="keyboard-container">
             <!-- Primera fila -->
             <div class="keyboard-row">
