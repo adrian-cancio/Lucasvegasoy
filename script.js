@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    
+    const RAW_FILES = "https://raw.githubusercontent.com/adrian-cancio/Lucasvegasoy/"
+    
     // =======================
     // 0. Textos (para facilitar traducciones)
     // =======================
@@ -43,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalText = document.getElementById('final-text');
     const finalRestart = document.getElementById('final-restart');
 
-    const RAW_FILES = "https://raw.githubusercontent.com/adrian-cancio/Lucasvegasoy/"
 
     // Mapa para añadir acentos a vocales mayúsculas
     const accentMap = {
