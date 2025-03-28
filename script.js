@@ -159,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Validar intento al presionar Enter
     function handleEnter() {
+        if (currentRow >= rows) return; // Prevenir que se procese si el juego ya terminó
         if (currentCol < cols) {
             showMessage('Completa todas las letras antes de validar.');
             return;
