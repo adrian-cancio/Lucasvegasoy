@@ -12,13 +12,13 @@
 <body>
     <!-- Encabezado con un solo botón para tema oscuro -->
     <header>
-        <div class="header-title">WORDLE</div>
-        <button id="dark-mode-btn">🌓</button>
+        <div class="header-title"></div>
+        <button id="dark-mode-btn"></button>
     </header>
 
     <!-- Botón para generar nueva palabra -->
     <div class="new-word-container">
-        <button id="new-word-btn">Nueva Palabra</button>
+        <button id="new-word-btn"></button>
     </div>
 
     <!-- Contenedor principal del juego -->
@@ -53,7 +53,7 @@
                 <button class="key">K</button>
                 <button class="key">L</button>
                 <button class="key">Ñ</button>
-                <!-- Botón para añadir tilde a la última vocal escrita -->
+                <!-- Botón para añadir tilde a la próxima vocal -->
                 <button class="key special-key" id="tilde-btn">´</button>
             </div>
             <!-- Tercera fila -->
@@ -66,18 +66,18 @@
                 <button class="key">B</button>
                 <button class="key">N</button>
                 <button class="key">M</button>
-                <button class="key special-key" id="enter-btn">Enter</button>
+                <button class="key special-key" id="enter-btn"></button>
             </div>
         </div>
     </main>
 
-    <!-- Contenedor para mostrar mensajes en pantalla (en vez de alerts) -->
+    <!-- Contenedor para mostrar mensajes temporales -->
     <div id="message-container" class="message-container"></div>
     <!-- Contenedor permanente para mensaje final -->
     <div id="final-container" class="final-container hidden">
         <h2 id="final-title"></h2>
         <p id="final-text"></p>
-        <button id="final-restart">Nueva Palabra</button>
+        <button id="final-restart"></button>
     </div>
 
     <script src="script.js"></script>
