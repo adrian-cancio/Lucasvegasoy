@@ -280,4 +280,11 @@ document.addEventListener('DOMContentLoaded', () => {
             startGame(); // Inicia con una palabra al cargar
         })
         .catch(err => console.error('Error al cargar palabras:', err));
+
+    // ============================
+    // 10. Prevenir foco en botones
+    // ============================
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mousedown', e => e.preventDefault());
+    });
 });
