@@ -29,10 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Funciones de ayuda
     // ============================
 
-    // Quita acentos de una cadena (ej. "á" => "a")
+    // Quita acentos de una cadena (ej. "á" => "a") 
+    // *NO* convierte "ñ" en "n", por lo que "ñ" se considera distinta.
     function removeAccents(str) {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return str.normalize("NFD")
+            .replace(/(?<![nN])[\u0300-\u036f]/g, "")
+            .normalize("NFC");
     }
+
 
     // Verifica si guess (sin acentos) existe en la lista (también sin acentos)
     function isWordValid(guess) {
@@ -187,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Colorear celdas
         for (let i = 0; i < cols; i++) {
             const cell = row.children[i];
-            const guessLetter = cell.textContent; // letra que se ve en pantalla (con o sin tilde)
+            const guessLetter = cell.textContent; // letra que se ve en pantalla
             const guessLetterNorm = guessNorm[i];
             const targetLetter = targetWord[i];   // puede tener tilde
             const targetLetterNorm = targetNorm[i];
@@ -200,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (targetNorm.includes(guessLetterNorm)) {
                 // Letra está en la palabra, pero en otra posición
                 cell.classList.add('present');
-                // Mantenemos lo que escribió el usuario (p.ej. si él puso tilde y no era la posición)
+                // Mantenemos lo que escribió el usuario (p.ej. si puso tilde)
             } else {
                 // Letra no existe en la palabra
                 cell.classList.add('absent');
@@ -231,8 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // a) Teclado físico
     document.addEventListener('keydown', (e) => {
         const key = e.key;
-
-        // Letras (incluyendo Ñ, mayúsculas y minúsculas)
+        // Letras (incluyendo Ñ/ñ en mayúsculas y minúsculas)
         if (/^[a-zñA-ZÑ]$/.test(key)) {
             handleKey(key.toUpperCase());
         } else if (key === 'Backspace') {
