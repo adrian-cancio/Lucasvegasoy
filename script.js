@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Borrar última letra
     function handleBackspace() {
+        if (currentRow >= rows) return; // Prevenir que se procese si el juego ya terminó
         if (currentCol > 0) {
             currentCol--;
             const row = boardContainer.children[currentRow];
