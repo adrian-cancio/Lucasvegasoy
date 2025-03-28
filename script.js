@@ -43,6 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalText = document.getElementById('final-text');
     const finalRestart = document.getElementById('final-restart');
 
+    const RAW_FILES = "https://raw.githubusercontent.com/adrian-cancio/Lucasvegasoy/"
+
     // Mapa para añadir acentos a vocales mayúsculas
     const accentMap = {
         'A': 'Á',
@@ -101,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================
     function loadWords() {
         // Cambia la URL si necesitas otra ruta a tu words.txt
-        return fetch('https://raw.githubusercontent.com/adrian-cancio/Lucasvegasoy/refs/heads/main/words.txt')
+        return fetch(RAW_FILES + 'refs/heads/main/words.txt')
             .then(response => response.text())
             .then(text => {
                 const allWords = text.split('\n')
