@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const newWordBtn = document.getElementById('new-word-btn');
     const darkModeBtn = document.getElementById('dark-mode-btn');
     const messageContainer = document.getElementById('message-container');
+    const finalContainer = document.getElementById('final-container');
+    const finalTitle = document.getElementById('final-title');
+    const finalText = document.getElementById('final-text');
+    const finalRestart = document.getElementById('final-restart');
+
 
     // Mapa para añadir acentos a vocales mayúsculas
     const accentMap = {
@@ -158,6 +163,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
+    function showFinalMessage(won, word) {
+        if (won) {
+            finalTitle.textContent = "¡Felicidades!";
+            finalText.textContent = "La palabra era: " + word.toUpperCase();
+        } else {
+            finalTitle.textContent = "¡Perdiste!";
+            finalText.textContent = "La palabra era: " + word.toUpperCase();
+        }
+        finalContainer.classList.remove('hidden'); // Lo muestra
+    }
+
+
     // Validar intento al presionar Enter
     function handleEnter() {
         if (currentRow >= rows) return; // Prevenir que se procese si el juego ya terminó
@@ -208,8 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 4. Verificar victoria (ignorando acentos)
         if (guessNorm === targetNorm) {
-            showMessage('¡Felicidades! Adivinaste la palabra.');
-            currentRow = rows; // Bloquea más entradas
+            showFinalMessage(true, targetWord);
+            currentRow = rows;
             return;
         }
 
@@ -219,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 6. Si se agotan las filas
         if (currentRow === rows) {
-            showMessage('Lo siento, has perdido. La palabra era: ' + targetWord.toUpperCase());
+            showFinalMessage(false, targetWord);
         }
     }
 
@@ -267,6 +284,12 @@ document.addEventListener('DOMContentLoaded', () => {
     darkModeBtn.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
     });
+
+    finalRestart.addEventListener('click', () => {
+        finalContainer.classList.add('hidden'); // Oculta el contenedor
+        startGame(); // Inicia una nueva palabra
+    });
+
 
     // ============================
     // 9. Flujo inicial
