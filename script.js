@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    const RAW_FILES = "https://raw.githubusercontent.com/adrian-cancio/Lucasvegasoy/"
+    const RAW_FILES = "https://raw.githubusercontent.com/Lucasvegasoy/Lucasvegasoy/"
     
     // =======================
     // 0. Textos (para facilitar traducciones)
