@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 0. Textos (para facilitar traducciones)
     // =======================
     const TEXTS = {
-        HEADER_TITLE: "WORDLE",
+        HEADER_TITLE: "ADIVÍA A PALABRA",
         DARK_MODE_BTN: "🌓",
         NEW_WORD_BTN: "Nova Palabra",
         ENTER_BTN: "Probar",
